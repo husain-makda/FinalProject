@@ -11,7 +11,7 @@ namespace FinalProject.Husain.Support
     {
         // For additional details on SpecFlow hooks see http://go.specflow.org/doc-hooks
         public IWebDriver driver;
-        [BeforeScenario("@tag1")]
+        [BeforeScenario]
         public void BeforeScenarioWithTag()
         {
             driver =new ChromeDriver();

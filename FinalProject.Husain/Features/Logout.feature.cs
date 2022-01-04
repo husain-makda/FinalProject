@@ -75,11 +75,11 @@ namespace FinalProject.Husain.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("View order details and logout")]
-        [NUnit.Framework.CategoryAttribute("tag1")]
+        [NUnit.Framework.IgnoreAttribute("Ignored scenario")]
         public virtual void ViewOrderDetailsAndLogout()
         {
             string[] tagsOfScenario = new string[] {
-                    "tag1"};
+                    "ignore"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View order details and logout", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 6

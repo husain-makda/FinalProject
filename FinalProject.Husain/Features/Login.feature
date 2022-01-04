@@ -2,7 +2,7 @@
 
 A short summary of the feature
 
-@tag1
+@ignore
 Scenario: Login to the demo website
 	Given I am on the account page
 	When I enter a valid username and password

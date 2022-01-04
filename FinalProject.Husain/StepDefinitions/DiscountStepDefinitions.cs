@@ -34,6 +34,8 @@ namespace FinalProject.Husain.StepDefinitions
         [When(@"I apply the disocunt code")]
         public void WhenIApplyTheDisocuntCode()
         {
+            DiscountPOM discount = new DiscountPOM(driver);
+            discount.Coupon("edgewords");
             driver.FindElement(By.Id("coupon_code")).SendKeys("edgewords");
           
         }
@@ -41,7 +43,10 @@ namespace FinalProject.Husain.StepDefinitions
         [Then(@"Disount code is applied to total")]
         public void ThenDisountCodeIsAppliedToTotal()
         {
-            driver.FindElement(By.Name("apply_coupon")).Click();
+            DiscountPOM discount = new DiscountPOM(driver);
+            //discount.ApplyButton();
+           //discount.CheckTotalAmt();
+            discount.ApplyButton();
             driver.FindElement(By.XPath("/html//article[@id='post-5']/div[@class='entry-content']/div[@class='woocommerce']//table[@class='shop_table shop_table_responsive']//tr[@class='cart-subtotal']/td/span")).GetAttribute("textContent");
             Assert.That(Discount, Is.EqualTo((Cost / 100) * 15), "The Discount Amount is wrong");
             Console.WriteLine("Amount is wrong");

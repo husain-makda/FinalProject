@@ -1,8 +1,7 @@
 ﻿Feature: AddItem
 
 A short summary of the feature
-
-@tag1
+@ignore
 Scenario: I add item to cart
 	Given I am Logged in
 	And I am on the shop page

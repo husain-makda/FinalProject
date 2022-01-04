@@ -2,7 +2,7 @@
 
 A short summary of the feature
 
-@tag1
+@ignore
 Scenario: View order details and logout
 	Given I am logged in
 	And On my account page
