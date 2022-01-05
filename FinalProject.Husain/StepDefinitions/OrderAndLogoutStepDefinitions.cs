@@ -6,6 +6,7 @@ using NUnit.Framework;
 using FluentAssertions;
 using FinalProject.Husain.POM;
 using OpenQA.Selenium.Support.UI;
+using FinalProject.Husain.Utils;
 
 namespace FinalProject.Husain.StepDefinitions
 {

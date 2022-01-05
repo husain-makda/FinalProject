@@ -25,14 +25,14 @@ namespace FinalProject.Husain.Support
 
         }
 
-        //public static void TakeScreenshot(IWebDriver driver, string Filename)
-        //{
+        public static void TakeScreenshot(IWebDriver driver, string Filename)
+        {
 
-        //    ITakesScreenshot ssdriver = driver as ITakesScreenshot;
-        //    Screenshot myscreenshot = ssdriver.GetScreenshot();
-        //    myscreenshot.SaveAsFile(@"C:\Users\HusainMakda\OneDrive - nFocus Limited\Pictures\Screenshots\" + Filename + ".png", ScreenshotImageFormat.Png);
+            ITakesScreenshot ssdriver = driver as ITakesScreenshot;
+            Screenshot myscreenshot = ssdriver.GetScreenshot();
+            myscreenshot.SaveAsFile(@"C:\Users\HusainMakda\OneDrive - nFocus Limited\Pictures\Screenshots\" + Filename + ".png", ScreenshotImageFormat.Png);
 
-        //}
+        }
 
         public static void TakeScreenshotElement(IWebDriver driver, string Filename, By locator)
         {
@@ -42,17 +42,6 @@ namespace FinalProject.Husain.Support
             myscreenshot.SaveAsFile(@"C:\Users\HusainMakda\OneDrive - nFocus Limited\Pictures\Screenshots\" + Filename + ".png", ScreenshotImageFormat.Png);
 
         }
-
-
-
-        //[BeforeScenario(Order = 1)]
-        //public void FirstBeforeScenario()
-        //{
-        //    // Example of ordering the execution of hooks
-        //    // See https://docs.specflow.org/projects/specflow/en/latest/Bindings/Hooks.html?highlight=order#hook-execution-order
-
-        //    //TODO: implement logic that has to run before executing each scenario
-        //}
 
         [AfterScenario]
         public void AfterScenario()

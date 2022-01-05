@@ -43,7 +43,7 @@ namespace FinalProject.Husain.POM
             string Discount = CouponAmt.Text;
             pricebeforediscount = Convert.ToDecimal(subtotal.Remove(0, 1));
             discount = (15m / 100m) * pricebeforediscount;
-            Assert.That(Discount.Remove(0, 1), Is.EqualTo(discount.ToString("0.00")), "They are not equal");
+            Assert.That(Discount.Remove(0, 1), Is.EqualTo(discount.ToString("0.00")), "Not the same");
         }
         
         public void CheckTotalAmt()
@@ -52,7 +52,7 @@ namespace FinalProject.Husain.POM
             priceafterdiscount = pricebeforediscount - discount;
             shipAmt = Convert.ToDecimal(shipping.Remove(0, 1));
             totalAmt = priceafterdiscount + shipAmt;
-            Assert.That(Total.Text.Remove(0, 1), Is.EqualTo(totalAmt.ToString("0.00")), "They are not equal");
+            Assert.That(Total.Text.Remove(0, 1), Is.EqualTo(totalAmt.ToString("0.00")), "Not the same");
 
             
         }

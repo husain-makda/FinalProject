@@ -31,20 +31,23 @@ namespace FinalProject.Husain.Test
             // 1 | open | /demo-site/my-account/ | 
             driver.Navigate().GoToUrl("https://www.edgewordstraining.co.uk/demo-site/my-account/");
             // 2 | setWindowSize | 1282x1040 | 
-            driver.Manage().Window.Size = new System.Drawing.Size(1282, 1040);
+            driver.Manage().Window.Maximize();
+            //driver.Manage().Window.Size = new System.Drawing.Size(1282, 1040);
             // login with username and password
             LoginPOMs Login = new LoginPOMs(driver);
             Login.Login(username: "Hello@gmail.com", password: "Password25@//200");
             Thread.Sleep(1000);
             Console.WriteLine("User is logged in");
 
+            // go to shop page
             NavPOM Nav = new NavPOM(driver);
             Nav.GoToShop();
+            //add item
             AddItemPOM Product = new AddItemPOM(driver);
             Product.Product().AddItem();
-
-
+            //go to cart page
             Nav.GoToCart();
+            //add discount
             DiscountPOM Discount = new DiscountPOM(driver);
             Discount.Coupon("edgewords");
             Discount.ApplyButton();
@@ -58,7 +61,7 @@ namespace FinalProject.Husain.Test
             catch (AssertionException)
             {
                 
-                Console.WriteLine("Coupon does not take 15% off");
+                Console.WriteLine("Coupon does not take of 15%");
             }
 
             //Check that the total is correct
@@ -70,13 +73,20 @@ namespace FinalProject.Husain.Test
             catch (AssertionException)
             {
                 
-                Console.WriteLine("The total amount is incorrect");
+                Console.WriteLine("The total is incorrect");
             }
 
             try { Assert.That(Coupon, "Coupon discount incorrect"); }
             catch (AssertionException) { }
+            try
+            {
+                //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
+                driver.FindElement(By.XPath("/html//article[@id='post-5']/div[@class='entry-content']//a[@href='https://www.edgewordstraining.co.uk/demo-site/checkout/']")).Click();
+            }
+            catch (ElementClickInterceptedException)
+            {
 
-            //proceed to checkout and completing billing details
+            }
             driver.FindElement(By.CssSelector(".menu-item.menu-item-45.menu-item-object-page.menu-item-type-post_type > a")).Click();
             BillingPOM Billing = new BillingPOM(driver);
             Billing.Firstname();
@@ -86,6 +96,7 @@ namespace FinalProject.Husain.Test
             Billing.Postcode();
             Billing.Phone();
             Billing.Email();
+            Billing.Note();
             Thread.Sleep(1000);
             driver.FindElement(By.CssSelector(".payment_method_cheque > label")).Click();
             // 20 | click | id=place_order | 
@@ -106,6 +117,7 @@ namespace FinalProject.Husain.Test
             Thread.Sleep(1000);
             try
             {
+                //logout
                 driver.FindElement(By.LinkText("Logout")).Click();
             }
             catch (ElementClickInterceptedException) { }

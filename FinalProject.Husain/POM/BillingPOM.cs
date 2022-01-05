@@ -23,7 +23,8 @@ namespace FinalProject.Husain.POM
         private IWebElement Billing_postcode => driver.FindElement(By.Id("billing_postcode"));
         private IWebElement Billing_phone => driver.FindElement(By.Id("billing_phone"));
         private IWebElement Billing_email => driver.FindElement(By.Id("billing_email"));
-
+        private IWebElement Billing_note => driver.FindElement(By.Id("order_comments"));
+       
         public void Firstname()
         {
             Billing_firstname.Clear();
@@ -64,6 +65,12 @@ namespace FinalProject.Husain.POM
         {
             Billing_email.Clear();
             Billing_email.SendKeys("hello@gmail.com");
+        }
+
+        public void Note()
+        {
+            Billing_note.Click();
+            Billing_note.SendKeys("");
         }
 
     }
