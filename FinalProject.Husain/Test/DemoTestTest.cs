@@ -23,6 +23,8 @@ namespace FinalProject.Husain.Test
     {
         private bool Coupon;
 
+    
+
         [Test]
         public void demoTest()
         {
@@ -68,7 +70,7 @@ namespace FinalProject.Husain.Test
             try
             {
                 Discount.CheckTotalAmt();
-               
+                
             }
             catch (AssertionException)
             {
@@ -80,12 +82,13 @@ namespace FinalProject.Husain.Test
             catch (AssertionException) { }
             try
             {
+                
                 //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
                 driver.FindElement(By.XPath("/html//article[@id='post-5']/div[@class='entry-content']//a[@href='https://www.edgewordstraining.co.uk/demo-site/checkout/']")).Click();
             }
             catch (ElementClickInterceptedException)
             {
-
+                //driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(1);
             }
             driver.FindElement(By.CssSelector(".menu-item.menu-item-45.menu-item-object-page.menu-item-type-post_type > a")).Click();
             BillingPOM Billing = new BillingPOM(driver);

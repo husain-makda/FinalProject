@@ -15,20 +15,31 @@ namespace FinalProject.Husain.StepDefinitions
     {
       
         private bool Coupon;
+        decimal discount;
+        string Discountt;
+        decimal totalAmt;
+        string Total;
 
-        [Given(@"I am on the login page")]
-        public void GivenIAmOnTheLoginPage()
+
+        //[Given(@"I am on the login page")]
+        //public void GivenIAmOnTheLoginPage()
+        //{
+        //    driver.Url = "https://www.edgewordstraining.co.uk/demo-site/";
+        //    driver.Manage().Window.Maximize();
+        //    NavPOM Nav = new NavPOM(driver);
+        //    //Got to account page
+        //    Nav.GoToAccount();
+        //}
+
+        [Given(@"I am on the login page, using a valid username and password")]
+        public void GivenIAmOnTheLoginPageUsingAValidUsernameAndPassword()
         {
             driver.Url = "https://www.edgewordstraining.co.uk/demo-site/";
             driver.Manage().Window.Maximize();
             NavPOM Nav = new NavPOM(driver);
             //Got to account page
             Nav.GoToAccount();
-        }
 
-        [When(@"I use a valid username and password")]
-        public void WhenIUseAValidUsernameAndPassword()
-        {
             //login with username and password
             LoginPOMs Login = new LoginPOMs(driver);
             Login.Login(username: "Hello@gmail.com", password: "Password25@//200");
@@ -37,6 +48,21 @@ namespace FinalProject.Husain.StepDefinitions
             //Assert.That(bodytext, Does.Contain("Hello hello1").IgnoreCase, "");
             Console.WriteLine("User is logged in");
         }
+
+      
+
+
+        //[When(@"I use a valid username and password")]
+        //public void WhenIUseAValidUsernameAndPassword()
+        //{
+        //    //login with username and password
+        //    LoginPOMs Login = new LoginPOMs(driver);
+        //    Login.Login(username: "Hello@gmail.com", password: "Password25@//200");
+
+        //    //string bodytext = driver.FindElement(By.TagName("body")).Text;
+        //    //Assert.That(bodytext, Does.Contain("Hello hello1").IgnoreCase, "");
+        //    Console.WriteLine("User is logged in");
+        //}
 
 
         [When(@"I add a cap to cart which I view")]
@@ -48,7 +74,15 @@ namespace FinalProject.Husain.StepDefinitions
             //add item to cart
             AddItemPOM Product = new AddItemPOM(driver);
             Product.Product().AddItem();
+            
+
+        }
+
+        [Then(@"Correct disocunt is applied")]
+        public void ThenCorrectDisocuntIsApplied()
+        {
             //view cart
+            NavPOM Nav = new NavPOM(driver);
             Nav.GoToCart();
             // add the discount
             DiscountPOM Discount = new DiscountPOM(driver);
@@ -61,27 +95,28 @@ namespace FinalProject.Husain.StepDefinitions
             try
             {
                 Discount.CheckCouponAmt();
+                //Assert.That(Discountt.Remove(0, 1), Is.EqualTo(discount.ToString("0.00")), "Not the same");
             }
             catch (AssertionException)
             {
-
+                Assert.That(Discountt.Remove(0, 1), Is.EqualTo(discount.ToString("0.00")), "Not the same");
                 Console.WriteLine("Coupon does not take of 15%");
             }
 
             //Check that the total is correct
             try
             {
-                Discount.CheckTotalAmt();
-
+                Discount.CheckTotalAmt();  
             }
             catch (AssertionException)
             {
-
+                Assert.That(Total.Remove(0, 1), Is.EqualTo(totalAmt.ToString("0.00")), "Not the same");
                 Console.WriteLine("The total is incorrect");
             }
 
             try { Assert.That(Coupon, "Coupon discount incorrect"); }
             catch (AssertionException) { }
+            driver.FindElement(By.CssSelector(".menu-item.menu-item-45.menu-item-object-page.menu-item-type-post_type > a")).Click();
 
         }
 
