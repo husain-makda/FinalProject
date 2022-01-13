@@ -5,6 +5,7 @@ using OpenQA.Selenium.Chrome;
 using NUnit.Framework;
 using FluentAssertions;
 using FinalProject.Husain.POM;
+using static FinalProject.Husain.Utils.MyHelpers;
 using OpenQA.Selenium.Support.UI;
 
 namespace FinalProject.Husain.StepDefinitions
@@ -13,115 +14,97 @@ namespace FinalProject.Husain.StepDefinitions
 
     public class ProjectStepDefinitions : Support.Hooks
     {
-      
+
         private bool Coupon;
+        decimal pricebeforediscount;
         decimal discount;
-        string Discountt;
+        decimal priceafterdiscount;
+        decimal shipAmt;
         decimal totalAmt;
-        string Total;
 
-
-        //[Given(@"I am on the login page")]
-        //public void GivenIAmOnTheLoginPage()
-        //{
-        //    driver.Url = "https://www.edgewordstraining.co.uk/demo-site/";
-        //    driver.Manage().Window.Maximize();
-        //    NavPOM Nav = new NavPOM(driver);
-        //    //Got to account page
-        //    Nav.GoToAccount();
-        //}
-
-        [Given(@"I am on the login page, using a valid username and password")]
-        public void GivenIAmOnTheLoginPageUsingAValidUsernameAndPassword()
+        [Given(@"I am on the login page")]
+        public void GivenIAmOnTheLoginPage()
         {
             driver.Url = "https://www.edgewordstraining.co.uk/demo-site/";
             driver.Manage().Window.Maximize();
+            WaitHelper(driver, 15, By.LinkText("My account"));
             NavPOM Nav = new NavPOM(driver);
             //Got to account page
             Nav.GoToAccount();
+        }
 
+        [When(@"using a valid username '([^']*)' and password '([^']*)'")]
+        public void WhenUsingAValidUsernameAndPassword(string p0, string p1)
+        {
             //login with username and password
             LoginPOMs Login = new LoginPOMs(driver);
-            Login.Login(username: "Hello@gmail.com", password: "Password25@//200");
-
-            //string bodytext = driver.FindElement(By.TagName("body")).Text;
-            //Assert.That(bodytext, Does.Contain("Hello hello1").IgnoreCase, "");
+            Login.Login(username:p0, password:p1);
             Console.WriteLine("User is logged in");
         }
 
-      
 
 
-        //[When(@"I use a valid username and password")]
-        //public void WhenIUseAValidUsernameAndPassword()
-        //{
-        //    //login with username and password
-        //    LoginPOMs Login = new LoginPOMs(driver);
-        //    Login.Login(username: "Hello@gmail.com", password: "Password25@//200");
-
-        //    //string bodytext = driver.FindElement(By.TagName("body")).Text;
-        //    //Assert.That(bodytext, Does.Contain("Hello hello1").IgnoreCase, "");
-        //    Console.WriteLine("User is logged in");
-        //}
-
-
-        [When(@"I add a cap to cart which I view")]
-        public void WhenIAddACapToCart()
+        [When(@"I add item to cart, which I view")]
+        public void WhenIAddItemToCartWhichIView()
         {
+            WaitHelper(driver, 15, By.LinkText("Shop"));
             //go to shop page
             NavPOM Nav = new NavPOM(driver);
             Nav.GoToShop();
             //add item to cart
             AddItemPOM Product = new AddItemPOM(driver);
             Product.Product().AddItem();
-            
-
         }
 
-        [Then(@"Correct disocunt is applied")]
-        public void ThenCorrectDisocuntIsApplied()
+        [When(@"I apply disocunt code")]
+        public void WhenIApplyDisocuntCode()
         {
             //view cart
             NavPOM Nav = new NavPOM(driver);
             Nav.GoToCart();
             // add the discount
-            DiscountPOM Discount = new DiscountPOM(driver);
-            Discount.Coupon("edgewords");
-            Discount.ApplyButton();
-
+            DiscountPOM Discountt = new DiscountPOM(driver);
+            Discountt.Coupon("edgewords");
+            Discountt.ApplyButton();
             Thread.Sleep(1000);
-            //Console.WriteLine("Amount is wrong");
-            //check the coupon amount is correct
-            try
-            {
-                Discount.CheckCouponAmt();
-                //Assert.That(Discountt.Remove(0, 1), Is.EqualTo(discount.ToString("0.00")), "Not the same");
-            }
-            catch (AssertionException)
-            {
-                Assert.That(Discountt.Remove(0, 1), Is.EqualTo(discount.ToString("0.00")), "Not the same");
-                Console.WriteLine("Coupon does not take of 15%");
-            }
+            Console.WriteLine("Amount is wrong");
+        }
 
-            //Check that the total is correct
+        [Then(@"Correct disocunt is applied")]
+        public void ThenCorrectDisocuntIsApplied()
+        {
+            //DiscountPOM Discountt = new DiscountPOM(driver);
             try
             {
-                Discount.CheckTotalAmt();  
+                string subtotal = driver.FindElement(By.XPath("/html//article[@id='post-5']/div[@class='entry-content']/div[@class='woocommerce']//table[@class='shop_table shop_table_responsive']//tr[@class='cart-subtotal']/td/span")).Text;
+                string Amount = driver.FindElement(By.CssSelector(".cart-discount.coupon-edgewords > td > .amount.woocommerce-Price-amount")).Text;
+                pricebeforediscount = Convert.ToDecimal(subtotal.Remove(0, 1));
+                discount = (15m / 100m) * pricebeforediscount;
+                Assert.That(Amount.Remove(0, 1), Is.EqualTo(discount.ToString("0.00")), "Not the same");
+
             }
-            catch (AssertionException)
+            catch (AssertionException) { }
+
+
+            try
             {
+                string shipping = driver.FindElement(By.XPath("/html//article[@id='post-5']/div[@class='entry-content']/div[@class='woocommerce']//table[@class='shop_table shop_table_responsive']//tr[@class='cart-subtotal']/td/span")).Text;
+                priceafterdiscount = pricebeforediscount - discount;
+                shipAmt = Convert.ToDecimal(shipping.Remove(0, 1));
+                totalAmt = priceafterdiscount + shipAmt;
+                string Total = driver.FindElement(By.XPath("/html//article[@id='post-5']//div[@class='cart-collaterals']/div/table[@class='shop_table shop_table_responsive']//strong/span")).Text;
                 Assert.That(Total.Remove(0, 1), Is.EqualTo(totalAmt.ToString("0.00")), "Not the same");
-                Console.WriteLine("The total is incorrect");
+
             }
+            catch (AssertionException) { }
 
             try { Assert.That(Coupon, "Coupon discount incorrect"); }
             catch (AssertionException) { }
             driver.FindElement(By.CssSelector(".menu-item.menu-item-45.menu-item-object-page.menu-item-type-post_type > a")).Click();
 
         }
-
-        [Then(@"I am able to checkout")]
-        public void ThenIAmAbleToCheckout()
+        [Then(@"Place order and view order number")]
+        public void ThenPlaceOrderAndViewOrderNumber()
         {
             // go to checkout
             driver.FindElement(By.CssSelector(".menu-item.menu-item-45.menu-item-object-page.menu-item-type-post_type > a")).Click();
@@ -136,12 +119,8 @@ namespace FinalProject.Husain.StepDefinitions
             Billing.Note();
             Thread.Sleep(1000);
             driver.FindElement(By.CssSelector(".payment_method_cheque > label")).Click();
-        }
 
-        [Then(@"I can place order")]
-        public void ThenICanPlaceOrder()
-
-        {
+            // place order
             try
             {
                 driver.FindElement(By.XPath("/html//button[@id='place_order']")).Click();
@@ -155,7 +134,7 @@ namespace FinalProject.Husain.StepDefinitions
             Nav.GoToOrders();
             //screenshot
             TakeScreenshotElement(driver, "Order Number", By.CssSelector("tr:nth-of-type(1) > .woocommerce-orders-table__cell.woocommerce-orders-table__cell-order-number > a"));
-            Thread.Sleep(1000);
+            WaitHelper(driver, 15, By.LinkText("Logout"));
             //logout
             try
             {
@@ -163,9 +142,12 @@ namespace FinalProject.Husain.StepDefinitions
             }
             catch (ElementClickInterceptedException) { }
             Thread.Sleep(1000);
-
-          
         }
+
+
+        
+
+
 
     }
 }

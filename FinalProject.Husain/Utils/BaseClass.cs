@@ -27,8 +27,8 @@ namespace FinalProject.Husain.Utils
         [TearDown]
         public void TearDown()
         {
-            driver.Close();
-            //driver.Quit();
+            //driver.Close();
+            driver.Quit();
         }
     }
 }

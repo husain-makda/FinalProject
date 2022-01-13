@@ -14,14 +14,6 @@ namespace FinalProject.Husain.Utils
         {
             WebDriverWait mysecodwait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
             mysecodwait.Until(drv => drv.FindElement(locator).Displayed);
-
-        }
-
-        public static void HandleAlert(IWebDriver driver)
-        {
-            IAlert myalert = driver.SwitchTo().Alert();
-            Console.WriteLine("Alert encountered wit text : " + myalert.Text);
-            myalert.Accept();
         }
 
         public static void TakeScreenshot(IWebDriver driver, string Filename)

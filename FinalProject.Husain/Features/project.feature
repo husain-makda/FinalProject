@@ -1,14 +1,17 @@
 ﻿Feature: WebsiteTest
 
 Be able to login to the website, add an item to cart, apply discount and be able to place order. 
+Background: 
+Given I am on the login page
 
 @tag1
 Scenario: Able to place order
-	Given I am on the login page, using a valid username and password
-	When I add a cap to cart which I view
+	When using a valid username 'hello@gmail.com' and password 'Password25@//200'
+	And I add item to cart, which I view
+	When I apply disocunt code
 	Then Correct disocunt is applied
-	Then I am able to checkout
-	Then I can place order
+	Then Place order and view order number
+
 	
 	
 	

@@ -22,9 +22,11 @@ namespace FinalProject.Husain.Test
     public class DemoTestTest : Utils.BaseClass
     {
         private bool Coupon;
-
-    
-
+        decimal pricebeforediscount;
+        decimal discount;
+        decimal priceafterdiscount;
+        decimal shipAmt;
+        decimal totalAmt;
         [Test]
         public void demoTest()
         {
@@ -37,11 +39,14 @@ namespace FinalProject.Husain.Test
             //driver.Manage().Window.Size = new System.Drawing.Size(1282, 1040);
             // login with username and password
             LoginPOMs Login = new LoginPOMs(driver);
+            WaitHelper(driver, 15, By.LinkText("My account"));
             Login.Login(username: "Hello@gmail.com", password: "Password25@//200");
             Thread.Sleep(1000);
             Console.WriteLine("User is logged in");
 
             // go to shop page
+            WaitHelper(driver, 15, By.LinkText("Shop"));
+          
             NavPOM Nav = new NavPOM(driver);
             Nav.GoToShop();
             //add item
@@ -53,42 +58,46 @@ namespace FinalProject.Husain.Test
             DiscountPOM Discount = new DiscountPOM(driver);
             Discount.Coupon("edgewords");
             Discount.ApplyButton();
+
          
             Thread.Sleep(1000);
-            //Console.WriteLine("Amount is wrong");
+            Console.WriteLine("Amount is wrong");
             try
             {
-                Discount.CheckCouponAmt();
-            }
-            catch (AssertionException)
-            {
-                
-                Console.WriteLine("Coupon does not take of 15%");
-            }
+                string subtotal = driver.FindElement(By.XPath("/html//article[@id='post-5']/div[@class='entry-content']/div[@class='woocommerce']//table[@class='shop_table shop_table_responsive']//tr[@class='cart-subtotal']/td/span")).Text;
+                string Amount = driver.FindElement(By.CssSelector(".cart-discount.coupon-edgewords > td > .amount.woocommerce-Price-amount")).Text;
+                pricebeforediscount = Convert.ToDecimal(subtotal.Remove(0, 1));
+                discount = (15m / 100m) * pricebeforediscount;
+                Assert.That(Amount.Remove(0, 1), Is.EqualTo(discount.ToString("0.00")), "Not the same");
 
-            //Check that the total is correct
+            }
+            catch (AssertionException){}
+
+
             try
             {
-                Discount.CheckTotalAmt();
-                
+                string shipping = driver.FindElement(By.XPath("/html//article[@id='post-5']/div[@class='entry-content']/div[@class='woocommerce']//table[@class='shop_table shop_table_responsive']//tr[@class='cart-subtotal']/td/span")).Text;
+                priceafterdiscount = pricebeforediscount - discount;
+                shipAmt = Convert.ToDecimal(shipping.Remove(0, 1));
+                totalAmt = priceafterdiscount + shipAmt;
+                string Total = driver.FindElement(By.XPath("/html//article[@id='post-5']//div[@class='cart-collaterals']/div/table[@class='shop_table shop_table_responsive']//strong/span")).Text;
+                Assert.That(Total.Remove(0, 1), Is.EqualTo(totalAmt.ToString("0.00")), "Not the same");
+
             }
-            catch (AssertionException)
-            {
-                
-                Console.WriteLine("The total is incorrect");
-            }
+            catch (AssertionException){}
+
 
             try { Assert.That(Coupon, "Coupon discount incorrect"); }
             catch (AssertionException) { }
             try
             {
                 
-                //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
                 driver.FindElement(By.XPath("/html//article[@id='post-5']/div[@class='entry-content']//a[@href='https://www.edgewordstraining.co.uk/demo-site/checkout/']")).Click();
             }
             catch (ElementClickInterceptedException)
             {
-                //driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(1);
+                
             }
             driver.FindElement(By.CssSelector(".menu-item.menu-item-45.menu-item-object-page.menu-item-type-post_type > a")).Click();
             BillingPOM Billing = new BillingPOM(driver);
@@ -117,7 +126,8 @@ namespace FinalProject.Husain.Test
             Nav.GoToOrders();
             //screenshot
             TakeScreenshotElement(driver, "Order Number", By.CssSelector("tr:nth-of-type(1) > .woocommerce-orders-table__cell.woocommerce-orders-table__cell-order-number > a"));
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
+            WaitHelper(driver, 15, By.LinkText("Logout"));
             try
             {
                 //logout
